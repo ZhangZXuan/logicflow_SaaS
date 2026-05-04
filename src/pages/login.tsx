@@ -3,18 +3,18 @@ import request, { getRequestErrorMessage } from '../utils/request'
 import { useState } from 'react';
 
 
-interface LoginResult {
-    code: number;
-    data: {
-        token: string;
-        user: {
-            userId: string;
-            username: string;
-            phone: string;
-            role: 'student' | 'counselor' | 'college';
-        };
-    };
-}
+// interface LoginResult {
+//     code: number;
+//     data: {
+//         token: string;
+//         user: {
+//             userId: string;
+//             username: string;
+//             phone: string;
+//             role: 'student' | 'counselor' | 'college';
+//         };
+//     };
+// }
 export default function LoginPage() {
     const navigate = useNavigate()
     const [phone, setPhone] = useState('')

@@ -23,7 +23,6 @@ export type CustomProperties = {
     style?: LogicFlow.CommonTheme;
     textStyle?: LogicFlow.TextNodeTheme;
 };
-class CustomCircleNode extends CircleNode { }
 class CustomCircleModel extends CircleNodeModel {
     override properties: CustomProperties;
     constructor(data: any, graphModel: GraphModel) {
