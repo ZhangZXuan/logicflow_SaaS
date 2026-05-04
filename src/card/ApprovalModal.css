@@ -1,0 +1,336 @@
+/* 遮罩层 - 渐变暗色背景 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 弹窗卡片 - 白色毛玻璃效果 */
+.modal-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 32px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 8px 24px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-card h2 {
+    margin: 0 0 24px 0;
+    color: #1a1a1a;
+    font-size: 22px;
+    font-weight: 600;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-card h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(180deg, #1890ff 0%, #52c41a 100%);
+    border-radius: 2px;
+}
+
+/* 内容区域 */
+.content {
+    margin-bottom: 24px;
+    min-height: 120px;
+}
+
+/* 节点类型通用标题样式 */
+.condition-content h3,
+.start-content h3,
+.approval-content h3,
+.end-content h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 通用输入框样式 */
+.condition-content input[type="text"],
+.approval-content textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    box-sizing: border-box;
+}
+
+.condition-content input[type="text"]:focus,
+.approval-content textarea:focus {
+    outline: none;
+    border-color: #1890ff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.15);
+}
+
+/* 通用标签样式 */
+.approval-info label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 通用段落样式 */
+.start-content p,
+.end-content p,
+.approval-content p {
+    color: #666;
+    font-size: 14px;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+/* ========== condition 节点样式 ========== */
+.condition-content {
+    background: linear-gradient(135deg, #f0f5ff 0%, #e6f4ff 100%);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #d9e6ff;
+}
+
+.condition-content h3 {
+    color: #1890ff;
+}
+
+.condition-content h3::before {
+    content: '📝';
+    font-size: 20px;
+}
+
+.condition-content input[type="text"] {
+    margin-bottom: 16px;
+}
+
+.condition-content button {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.condition-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+}
+
+.condition-content button:active {
+    transform: translateY(0);
+}
+
+/* ========== start 节点样式 ========== */
+.start-content {
+    background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #b7eb8f;
+    text-align: center;
+}
+
+.start-content h3 {
+    color: #52c41a;
+    justify-content: center;
+}
+
+.start-content h3::before {
+    content: '🚀';
+    font-size: 20px;
+}
+
+.start-content p {
+    color: #389e0d;
+    font-weight: 500;
+}
+
+/* ========== approval 节点样式 ========== */
+.approval-content {
+    background: linear-gradient(135deg, #fff7e6 0%, #ffd591 100%);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #ffc53d;
+}
+
+.approval-content h3 {
+    color: #fa8c16;
+}
+
+.approval-content h3::before {
+    content: '✅';
+    font-size: 20px;
+}
+
+.approval-content p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 12px 0;
+}
+
+.approval-content p::before {
+    content: '●';
+    color: #fa8c16;
+    font-size: 8px;
+}
+
+.approval-info {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #ffc53d;
+}
+
+.approval-info label {
+    color: #d46b08;
+    font-weight: 600;
+}
+
+.approval-content textarea {
+    resize: vertical;
+    min-height: 100px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* ========== end 节点样式 ========== */
+.end-content {
+    background: linear-gradient(135deg, #f9f0ff 0%, #efdbff 100%);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #b37feb;
+    text-align: center;
+}
+
+.end-content h3 {
+    color: #722ed1;
+    justify-content: center;
+}
+
+.end-content h3::before {
+    content: '🏁';
+    font-size: 20px;
+}
+
+.end-content p {
+    color: #531dab;
+    font-weight: 500;
+}
+
+/* ========== 操作按钮区域 ========== */
+.btns {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btns button {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btns button:first-child {
+    background: white;
+    color: #ff4d4f;
+    border: 2px solid #ff4d4f;
+}
+
+.btns button:first-child:hover {
+    background: #fff1f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
+}
+
+.btns button:last-child {
+    background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+}
+
+.btns button:last-child:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(82, 196, 26, 0.4);
+}
+
+/* 滚动条样式 */
+.modal-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-card::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-card::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-card::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}

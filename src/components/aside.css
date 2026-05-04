@@ -1,0 +1,57 @@
+.aside {
+  width: 220px;
+  height: 100vh;
+  background: #051020;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 24px;
+  box-sizing: border-box;
+  margin: 0;
+  border: none;
+}
+
+.aside__brand {
+  margin: 0;
+  padding: 28px 0 32px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  user-select: none;
+}
+
+.aside__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aside__link {
+  display: block;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: background 0.2s, color 0.2s;
+}
+
+.aside__link:hover:not(.aside__link--active) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 当前选中的菜单项（由 React state 切换，不是浏览器 :active） */
+.aside__link--active {
+  background: #165dff;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.aside__link:active:not(.aside__link--active) {
+  background: rgba(22, 93, 255, 0.35);
+}
