@@ -1,4 +1,4 @@
-import LogicFlow, { RectNode, RectNodeModel, CircleNode, CircleNodeModel, DiamondNode, DiamondNodeModel, GraphModel } from '@logicflow/core'
+import LogicFlow, { RectNode, RectNodeModel } from '@logicflow/core'
 
 // interface FLowNodeProperties{
 
