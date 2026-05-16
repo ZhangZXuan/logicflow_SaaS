@@ -24,4 +24,6 @@ router.get('/getPendingList', c.getPendingList)
 router.post('/approvePass', c.approvePass)
 //审批驳回
 router.post('/approveReject', c.approveReject)
+//获取审批指标数据
+router.get('/getMetricsData', c.getMetricsData)
 module.exports = router

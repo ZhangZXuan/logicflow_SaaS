@@ -1,9 +1,10 @@
-import { Input, InputNumber, Card, Space } from 'antd'
+import { Input, InputNumber, Card, Space, Modal } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 import { lf, flowname, type LogicNode } from './flow'
 import { useDispatch } from 'react-redux'
 import { setFlowData } from '../utils/redux'
 import { submit } from '../utils/request'
+import { validateProcess, detectCycle } from './validation'
 
 interface RightPropertyProps {
     onSubmit: () => void;
@@ -43,67 +44,138 @@ const handleTempSave = async () => {
 }
 
 
+// 显示校验错误详情
+function showValidationErrors(errors: { code: string; message: string; nodeId?: string }[]) {
+    Modal.error({
+        title: '流程校验未通过',
+        width: 520,
+        content: (
+            <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+                <p style={{ color: '#ff4d4f', marginBottom: 12 }}>
+                    发现 {errors.length} 个问题，请逐一修复：
+                </p>
+                <ul style={{ paddingLeft: 20, margin: 0 }}>
+                    {errors.map((err, idx) => (
+                        <li key={idx} style={{
+                            marginBottom: 8,
+                            padding: '8px 12px',
+                            background: '#fff2f0',
+                            borderRadius: 4,
+                            border: '1px solid #ffccc7',
+                            fontSize: 13,
+                            lineHeight: 1.5,
+                            listStyle: 'none',
+                        }}>
+                            {err.message}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ),
+        okText: '知道了',
+    });
+}
+
+//显示校验警告
+function showValidationWarnings(warnings: { code: string; message: string }[], onConfirm: () => void) {
+    if (warnings.length === 0) {
+        onConfirm();
+        return;
+    }
+    Modal.confirm({
+        title: '流程优化建议',
+        width: 480,
+        content: (
+            <div>
+                <p style={{ color: '#faad14', marginBottom: 12 }}>
+                    以下问题不影响提交，但建议优化：
+                </p>
+                <ul style={{ paddingLeft: 20, margin: 0 }}>
+                    {warnings.map((w, idx) => (
+                        <li key={idx} style={{
+                            marginBottom: 6,
+                            padding: '6px 10px',
+                            background: '#fffbe6',
+                            borderRadius: 4,
+                            border: '1px solid #ffe58f',
+                            fontSize: 13,
+                            listStyle: 'none',
+                        }}>
+                            {w.message}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ),
+        okText: '仍然提交',
+        cancelText: '返回修改',
+        onOk: onConfirm,
+    });
+}
+
 //提交校验函数
 export async function checkValidate() {
     // 1. 校验流程名称
     if (!flowname || flowname.trim() === '') {
-        alert('请输入流程名称');
+        Modal.warning({ title: '提示', content: '请输入流程名称' });
         return false;
     }
 
     // 2. 获取画布真实数据
     const graphData = lf.current?.getGraphData();
     if (!graphData) {
-        alert('画布未初始化');
+        Modal.warning({ title: '提示', content: '画布未初始化' });
         return false;
     }
 
     const { nodes, edges } = graphData;
-    console.log('info', { nodes, edges })
-    // 3. 至少一个节点
-    if (nodes.length === 0) {
-        alert('请至少添加一个节点');
+
+    // 3. 使用统一的校验引擎
+    const result = validateProcess(nodes, edges);
+
+    if (!result.valid) {
+        showValidationErrors(result.errors);
         return false;
     }
 
-    // 4. 校验所有连线必须有起点和终点
-    for (let edge of edges) {
-        if (!edge.sourceNodeId || !edge.targetNodeId) {
-            alert('有连线不完整，请删除或重新连接');
-            return false;
-        }
-    }
-
-    // 5. 必须有【开始节点】customrect 和【结束节点】circle
-    const hasStart = nodes.some((node: LogicNode) => typeof node.text === 'string' ? node.text === '开始' : node.text.value === '开始');
-    const hasEnd = nodes.some((node: LogicNode) => typeof node.text === 'string' ? node.text === '结束' : node.text.value === '结束');
-
-    if (!hasStart) {
-        alert('必须添加一个开始节点');
+    // 4. 循环依赖检测（二次确认）
+    const cycleResult = detectCycle({ nodes, edges });
+    if (cycleResult.hasCycle) {
+        Modal.error({
+            title: '检测到循环依赖',
+            content: (
+                <div>
+                    <p>流程中存在循环路径：</p>
+                    <p style={{
+                        color: '#ff4d4f',
+                        fontWeight: 'bold',
+                        padding: 8,
+                        background: '#fff2f0',
+                        borderRadius: 4,
+                    }}>
+                        {cycleResult.cyclePath?.join(' → ')}
+                    </p>
+                    <p>请检查并删除循环连线后重新提交。</p>
+                </div>
+            ),
+        });
         return false;
     }
-    if (!hasEnd) {
-        alert('必须添加一个结束节点');
-        return false;
-    }
+
     try {
         const res = await submit.post('/saveTemplate', {
             title: `${flowname}`,
-            flowData: {
-                nodes,
-                edges
-            }
-
+            flowData: { nodes, edges }
         })
         console.log('res', res)
     } catch (e: any) {
         console.log(e.status)
     }
 
-    // 所有校验通过
-    alert('校验通过，可以提交！');
-    console.log('info', { nodes, edges })
-    return { nodes, edges };
+    // 5. 警告确认
+    return new Promise<{ nodes: any[]; edges: any[] } | false>((resolve) => {
+        showValidationWarnings(result.warnings, () => resolve({ nodes, edges }));
+    });
 }
 export default function RightProperty({ onSubmit }: RightPropertyProps) {
     const dispatch = useDispatch();

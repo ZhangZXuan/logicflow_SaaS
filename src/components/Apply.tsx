@@ -24,11 +24,12 @@ export default function Apply() {
     }
     //发起申请
     async function startApply(templateId: number, title: string, formData: any) {
+        const userId = localStorage.getItem('userId') || 'student_001'
         console.log('formData', formData)
         const applyData = {
             templateId,
             title,
-            userId: 'student_001',
+            userId,
             formData
         }
         try {

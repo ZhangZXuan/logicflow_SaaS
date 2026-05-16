@@ -1,11 +1,4 @@
 export class ExclusiveGatewayEngine {
-
-    /**
-     * 执行分支判断
-     * @param {*} gatewayNode 网关节点
-     * @param {*} inputValue 网关【前一个节点】用户输入的值（比如 5）
-     * @returns 符合条件的下一条边
-     */
     static execute(gatewayNode: any, inputValue: string | number) {
         const outgoings = gatewayNode.graphModel.getOutgoingEdges(gatewayNode.id);
         if (!outgoings || outgoings.length === 0) return null;

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import './ProcessInstance.css'
 
 export default function ProcessInstance() {
-    const useRole = 'college'
+    const useRole = localStorage.getItem('role') || 'college'
     // 用 useState 来存列表数据
     const [list, setList] = useState<any[]>([])
 

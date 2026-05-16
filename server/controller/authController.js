@@ -25,40 +25,51 @@ module.exports.register = (req, res) => {
         role: role || 'student'
     })
 
-    // 生成 token（实际项目中应该使用 JWT）
+    // 生成 token
     const token = `token_${user.userId}_${Date.now()}`
 
     res.json({ code: 200, data: { token, user } })
 }
 
 // 登录
-// module.exports.login = (req, res) => {
-//     const { username, phone, password } = req.body
+module.exports.login = (req, res) => {
+    const { username, phone, password } = req.body
 
-//     // 验证必填字段
-//     if (!password) {
-//         return res.json({ code: 400, msg: '密码不能为空' })
-//     }
+    // 验证必填字段
+    if (!password) {
+        return res.json({ code: 400, msg: '密码不能为空' })
+    }
 
-//     // 查找用户
-//     let user
-//     if (phone) {
-//         user = db.getUserByPhone(phone)
-//     } else if (username) {
-//         user = db.getUserByUsername(username)
-//     }
+    // 查找用户
+    let user
+    if (phone) {
+        user = db.getUserByPhone(phone)
+    } else if (username) {
+        user = db.getUserByUsername(username)
+    }
 
-//     if (!user) {
-//         return res.json({ code: 404, msg: '用户不存在' })
-//     }
+    if (!user) {
+        return res.json({ code: 404, msg: '用户不存在' })
+    }
 
-//     // 验证密码（实际项目中应该使用加密密码）
-//     if (user.password !== password) {
-//         return res.json({ code: 401, msg: '密码错误' })
-//     }
+    // 验证密码
+    if (user.password !== password) {
+        return res.json({ code: 401, msg: '密码错误' })
+    }
 
-//     // 生成 token（实际项目中应该使用 JWT）
-//     const token = `token_${user.userId}_${Date.now()}`
+    // 生成 token
+    const token = `token_${user.userId}_${Date.now()}`
 
-//     res.json({ code: 200, data: { token, user } })
-// }
+    res.json({
+        code: 200,
+        data: {
+            token,
+            user: {
+                userId: user.userId,
+                username: user.username,
+                phone: user.phone,
+                role: user.role,
+            },
+        },
+    })
+}

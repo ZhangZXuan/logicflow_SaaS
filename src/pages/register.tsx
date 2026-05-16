@@ -27,6 +27,8 @@ export default function RegisterPage() {
             )
             localStorage.setItem('token', res.token)
             localStorage.setItem('user', JSON.stringify(res.user))
+            localStorage.setItem('role', res.user.role)
+            localStorage.setItem('userId', String(res.user.userId))
             navigate('/login', { replace: true })
         } catch (e) {
             const msg = getRequestErrorMessage(e)

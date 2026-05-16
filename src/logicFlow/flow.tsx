@@ -180,12 +180,25 @@ export default function Flow({ beginCreate, setBeginCreate }: FlowProps) {
             model.properties.condition = model.text.value;
             model.properties.isDefault = false;
         });
-        //循环依赖检查
+        //循环依赖检查（增强版）
         instance.on('before_edge_add', ({ edge }: { edge: logicEdge }) => {
             const fromId = edge.sourceNodeId
             const toId = edge.targetNodeId
+
+            if (fromId === toId) {
+                Modal.warning({ title: '提示', content: '不允许自环连线（节点不能连接自身）' });
+                return false
+            }
+
             if (checkCycle(fromId, toId, instance.getGraphModel())) {
-                Modal.warning({ title: '提示', content: '循环依赖检测到' });
+                const fromNode = instance.getGraphModel().getNodeModelById(fromId);
+                const toNode = instance.getGraphModel().getNodeModelById(toId);
+                const fromLabel = fromNode?.text?.value || fromNode?.text || fromId;
+                const toLabel = toNode?.text?.value || toNode?.text || toId;
+                Modal.warning({
+                    title: '循环依赖检测',
+                    content: `连线 "${fromLabel}" → "${toLabel}" 会形成循环依赖，请重新设计流程`
+                });
                 return false
             }
         })

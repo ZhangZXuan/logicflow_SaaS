@@ -38,6 +38,7 @@ export default function LoginPage() {
             localStorage.setItem('token', token)
             localStorage.setItem('user', JSON.stringify(user))
             localStorage.setItem('role', user.role)
+            localStorage.setItem('userId', String(user.userId))
             // 跳转
             if (user.role === 'student') {
                 navigate('/student', { replace: true })
